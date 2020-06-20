@@ -21,3 +21,7 @@ Includes the following plugins
   * neoformat
   * nerdtree
   * neomake
+
+## Usage
+Unpack to a directory and run the playbook.
+	# ./nvim_setup.yml
