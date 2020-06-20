@@ -1,0 +1,51 @@
+#!/usr/bin/ansible-playbook
+---
+- name: configure users vim environment
+  hosts: localhost
+  become: false
+  vars:
+    vim_plug:
+      path: '~/.local/share/nvim/site/autoload/'
+      url: 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    nvim_config:
+      path: '~/.config/nvim/init.vim'
+  tasks:
+    - name: install prerequisite packages
+      become: true
+      become_method: sudo
+      dnf:
+        name: 
+          - python36
+          - python3-pip
+          - neovim
+    - name: create plug.vim path
+      file:
+        path: '{{ vim_plug.path }}'
+        state: directory
+        owner: '{{ ansible_real_user_id }}'
+        group: '{{ ansible_real_group_id }}'
+        mode: 0750
+    - name: download vim-plug from github
+      get_url:
+        dest: '{{ vim_plug.path }}/plug.vim'
+        url: '{{ vim_plug.url }}'
+        owner: '{{ ansible_real_user_id }}'
+        group: '{{ ansible_real_group_id }}'
+        mode: 0750
+    - name:  copy vim.init to configuration dir
+      copy:
+        src: init.vim.orig
+        dest: '{{ nvim_config.path }}'
+        owner: '{{ ansible_real_user_id }}'
+        group: '{{ ansible_real_group_id }}'
+        mode: 0640
+    - name: install requisite python modules
+      pip:
+        name:
+          - pynvim
+          - jedi
+          - yapf
+          - pylint
+    - name: install plugins in neovim
+      command: nvim +PlugInstall +qall
+...
