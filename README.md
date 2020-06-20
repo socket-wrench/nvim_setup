@@ -24,4 +24,5 @@ Includes the following plugins
 
 ## Usage
 Unpack to a directory and run the playbook.
+	# cd nvim_setup
 	# ./nvim_setup.yml

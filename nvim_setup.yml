@@ -48,4 +48,5 @@
           - pylint
     - name: install plugins in neovim
       command: nvim +PlugInstall +qall
+      changed_when: false
 ...
